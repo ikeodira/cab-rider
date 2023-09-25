@@ -13,10 +13,13 @@ class MainPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Main Page"),
       ),
-      body: const Column(
+      body: Column(
         children: [
-          GoogleMap(initialCameraPosition: initialCameraPosition);
+          Container(),
         ],
+        // children: [
+        //   GoogleMap(initialCameraPosition: initialCameraPosition);
+        // ],
       ),
       // body: ElevatedButton(
       //   style: ElevatedButton.styleFrom(

@@ -9,7 +9,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-
 import '../widgets/taxibutton.dart';
 
 class LoginPage extends StatefulWidget {
@@ -46,16 +45,17 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  getConnectivity() =>
-      subscription = Connectivity().onConnectivityChanged.listen(
-        (ConnectivityResult result) async {
-          isDeviceConnected = await InternetConnectionChecker().hasConnection;
-          if (!isDeviceConnected && isAlertSet == false) {
-            showDialogBox();
-            setState(() => isAlertSet = true);
-          }
-        },
-      );
+  getConnectivity() {
+    subscription = Connectivity().onConnectivityChanged.listen(
+      (ConnectivityResult result) async {
+        isDeviceConnected = await InternetConnectionChecker().hasConnection;
+        if (!isDeviceConnected && isAlertSet == false) {
+          showDialogBox();
+          setState(() => isAlertSet = true);
+        }
+      },
+    );
+  }
 
   @override
   void dispose() {
@@ -68,10 +68,11 @@ class _LoginPageState extends State<LoginPage> {
     try {
       //Show Dialogue
       showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (BuildContext context) =>
-              const ProgressDialog(status: "Logging you in"));
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) =>
+            const ProgressDialog(status: "Logging you in"),
+      );
 
       final credential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
@@ -218,26 +219,28 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  showDialogBox() => showCupertinoDialog<String>(
-        context: context,
-        builder: (BuildContext context) => CupertinoAlertDialog(
-          title: const Text('No Connection'),
-          content: const Text('Please check your internet connectivity'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () async {
-                Navigator.pop(context, 'Cancel');
-                setState(() => isAlertSet = false);
-                isDeviceConnected =
-                    await InternetConnectionChecker().hasConnection;
-                if (!isDeviceConnected && isAlertSet == false) {
-                  showDialogBox();
-                  setState(() => isAlertSet = true);
-                }
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+  showDialogBox() {
+    showCupertinoDialog<String>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('No Connection'),
+        content: const Text('Please check your internet connectivity'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context, 'Cancel');
+              setState(() => isAlertSet = false);
+              isDeviceConnected =
+                  await InternetConnectionChecker().hasConnection;
+              if (!isDeviceConnected && isAlertSet == false) {
+                showDialogBox();
+                setState(() => isAlertSet = true);
+              }
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
 }
